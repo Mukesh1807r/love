@@ -1,259 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Will You Be Mine?</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Will You Be Mine? – Ultimate Edition</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap');
 
-  body {
-    margin: 0;
-    background: radial-gradient(circle at top left, #ffd6e0, #ffe6ea, #fff5f7);
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
+  :root{
+    --pink1:#ffd6e0; --pink2:#ffe6ea; --pink3:#fff5f7;
+    --rose:#c2185b; --hot:#f50057; --ink:#5a0035; --card:#fff0f5;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100svh; background:radial-gradient(circle at top left,var(--pink1),var(--pink2),var(--pink3));
+    font-family:'Poppins',sans-serif; color:var(--ink);
+    display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px; overflow:hidden;
+  }
+  h1{margin:10px 0 0; color:var(--rose); font-size:clamp(2rem,5vw,3rem); text-align:center; text-shadow:0 0 10px rgba(255,105,180,.35)}
+  .sub{margin:0 0 8px; opacity:.9; text-align:center}
+  .modes{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; width:min(1024px,96vw);
+  }
+  .card{
+    background:#ffffffc0; backdrop-filter: blur(6px);
+    border:1px solid #ffd0e0; border-radius:16px; padding:14px; box-shadow:0 6px 16px rgba(0,0,0,.08);
+    display:flex; flex-direction:column; gap:8px; cursor:pointer; transition:transform .18s, box-shadow .18s;
+  }
+  .card:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,.12)}
+  .card h3{margin:0; color:var(--hot)}
+  .btn{
+    background:linear-gradient(135deg,#ff80ab,var(--hot));
+    color:#fff; border:none; border-radius:999px; padding:12px 18px; font-size:1rem; cursor:pointer;
+    box-shadow:0 0 14px rgba(245,0,87,.28); transition:transform .2s, box-shadow .2s;
+  }
+  .btn:hover{ transform:scale(1.04); box-shadow:0 0 20px rgba(245,0,87,.45)}
+  .ghost{background:#fff; color:var(--hot); border:1px solid #ffc1d3}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center}
+  .screen{
+    position:relative; width:min(1024px,96vw); min-height:56svh; margin-top:4px;
+    border:1px solid #ffd0e0; border-radius:20px; background:#ffffffb3; backdrop-filter:blur(6px);
+    box-shadow:0 10px 26px rgba(0,0,0,.1); overflow:hidden; padding:18px;
+  }
+  .hidden{display:none}
+
+  /* Classic proposal styles */
+  .hero{ text-align:center; margin-top:2vh}
+  .heart{
+    position:absolute; font-size:22px; color:#ff4d6d; opacity:.85; pointer-events:none;
+    animation:floatUp 6s linear forwards;
+  }
+  @keyframes floatUp{ from{transform:translateY(0) scale(1); opacity:1} to{transform:translateY(-100vh) scale(.5); opacity:0} }
+
+  #noBtn{ position:absolute; left:50%; transform:translateX(-50%); }
+  .big{ font-family:"Great Vibes",cursive; color:#ff4081; font-size:clamp(2rem,5vw,3rem); margin:10px 0 0}
+
+  /* Popup */
+  #extraQuestion{
+    position:absolute; left:16px; bottom:16px; background:#fff; color:#d63384; border-radius:12px; padding:10px 14px; font-weight:700; box-shadow:0 4px 10px rgba(0,0,0,.2); cursor:pointer; display:none;
+  }
+  #popup{
+    position:absolute; inset:50% auto auto 50%; transform:translate(-50%,-50%);
+    background:var(--card); border-radius:18px; padding:22px; box-shadow:0 10px 28px rgba(0,0,0,.25); display:none; width:min(520px,92%);
   }
 
-  h1 {
-    color: #c2185b;
-    font-size: 3em;
-    margin-top: 12vh;
-    text-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
-  }
+  /* Chatbot */
+  .chat{ display:flex; flex-direction:column; gap:10px; max-height:60svh; overflow:auto; padding-right:6px}
+  .bubble{ padding:10px 14px; border-radius:16px; max-width:85%}
+  .you{ align-self:flex-end; background:#ffe3ee; border:1px solid #ffc8dd}
+  .bot{ align-self:flex-start; background:#fff; border:1px solid #ffd0e0}
+  .inputRow{ display:flex; gap:8px; }
+  input[type="text"]{ padding:10px 12px; border-radius:12px; border:1px solid #ffb6c9; outline:none; width:100%}
 
-  p {
-    color: #5a0035;
-    font-size: 1.1em;
-  }
+  /* Couple page */
+  .couple-wrap{ display:grid; gap:12px; max-width:760px; margin:0 auto}
+  .count{ font-size:1.1rem; color:#c2185b}
+  .names{ font-family:"Great Vibes",cursive; font-size:clamp(2rem,7vw,3.2rem); color:#c2185b; text-align:center}
+  .mini{ font-size:.95rem; opacity:.9}
 
-  .btn {
-    background: linear-gradient(135deg, #ff80ab, #f50057);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    margin: 10px;
-    border-radius: 50px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 0 15px rgba(245,0,87,0.3);
-    position: relative;
-  }
-
-  .btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(245,0,87,0.5);
-  }
-
-  #noBtn {
-    background: linear-gradient(135deg, #ffb6c1, #ff4081);
-    position: absolute;
-    transition: all 0.3s ease;
-  }
-
-  .heart {
-    position: absolute;
-    font-size: 24px;
-    color: #ff4d6d;
-    animation: floatUp 6s linear infinite;
-    pointer-events: none;
-    opacity: 0.8;
-  }
-
-  @keyframes floatUp {
-    0% {transform: translateY(0) scale(1); opacity: 1;}
-    100% {transform: translateY(-100vh) scale(0.5); opacity: 0;}
-  }
-
-  .fadein {
-    animation: fadein 2s ease forwards;
-  }
-
-  @keyframes fadein {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-
-  #extraQuestion {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    background: white;
-    color: #d63384;
-    border-radius: 12px;
-    padding: 15px 25px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    font-weight: bold;
-    cursor: pointer;
-    display: none;
-  }
-
-  #popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff0f5;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    display: none;
-    animation: fadein 0.5s ease forwards;
-  }
+  /* Confetti canvas */
+  #confettiCanvas{ position:absolute; inset:0; pointer-events:none}
 </style>
 </head>
 <body>
+  <h1>Will You Be Mine? 💖</h1>
+  <p class="sub">Choose a mode below. You can switch anytime.</p>
 
-  <h1 class="fadein">Will You Be Mine? 💖</h1>
-
-  <button class="btn fadein" id="yesBtn" onclick="sayYes()">Yes 💕</button>
-  <button class="btn fadein" id="noBtn" onclick="nextNoOption()">No 💔</button>
-
-  <audio id="bgmusic" loop autoplay volume="0.3">
-    <source src="https://cdn.pixabay.com/download/audio/2021/09/29/audio_d3c61d23e0.mp3?filename=romantic-background-ambient-12258.mp3" type="audio/mpeg">
-  </audio>
-
-  <div id="extraQuestion" onclick="showPopup()">I have one thing to ask you 💌</div>
-
-  <div id="popup">
-    <p style="font-size:1.2em;color:#d63384;">If there is nobody in your life... will you accept my proposal? 💞</p>
-    <button class="btn" onclick="popupYes()">Yes 💘</button>
-    <button class="btn" onclick="popupNo()">No 😢</button>
+  <!-- Mode selector -->
+  <div class="modes">
+    <div class="card" onclick="showMode('classic')">
+      <h3>💍 Classic Proposal</h3>
+      <p>Yes / No (runaway), popup question, email notifications.</p>
+      <button class="btn ghost">Open</button>
+    </div>
+    <div class="card" onclick="showMode('celebration')">
+      <h3>🎊 Celebration Effects</h3>
+      <p>Confetti, petals, music swap after “Yes”.</p>
+      <button class="btn ghost">Open</button>
+    </div>
+    <div class="card" onclick="showMode('chatbot')">
+      <h3>💬 Romantic Chatbot + Voice</h3>
+      <p>Type or speak Yes/No. Sweet replies + email log.</p>
+      <button class="btn ghost">Open</button>
+    </div>
+    <div class="card" onclick="showMode('couple')">
+      <h3>💑 Personalized Couple Page</h3>
+      <p>Names, date, animated heart & countdown.</p>
+      <button class="btn ghost">Open</button>
+    </div>
   </div>
 
-<script>
-const WEB3FORMS_KEY = "c170326d-ba7b-4dbc-8743-3a0775b30c89"; // Replace with your real access key
+  <!-- Main screens -->
+  <div id="classic" class="screen hidden">
+    <div class="hero">
+      <h2 class="big">Will You Be Mine? 💖</h2>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" onclick="classicYes()">Yes 💕</button>
+        <button id="noBtn" class="btn" onclick="moveNo()">No 💔</button>
+      </div>
 
-let noOptions = [
-  "No 💔",
-  "Are you sure? 😢",
-  "Please... just think again 💭",
-  "Don’t be so cold 🥶",
-  "C’mon, I made this just for you 😔",
-  "Don’t break my heart 💘",
-  "You’ll regret this 😭",
-  "You can’t escape love 💞",
-  "Give it a chance 💫",
-  "Please reconsider 🥺",
-  "Still no? You're tough 😩",
-  "You sure you’re not smiling right now? 😏",
-  "A tiny yes won’t hurt 😉",
-  "Okay, now you’re just teasing me 😅",
-  "My heart can’t handle another no 💔",
-  "Are you really that sure? 😢",
-  "One yes could make this magical ✨",
-  "You’re melting my heart already ❤️",
-  "Fine… last chance 💘",
-  "You finally said YES! 🎉💞"
-];
-let index = 0;
+      <audio id="bgmusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2021/09/29/audio_d3c61d23e0.mp3?filename=romantic-background-ambient-12258.mp3" type="audio/mpeg">
+      </audio>
 
-// Floating hearts animation
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.textContent = "💖";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = Math.random() * 3 + 3 + "s";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
-}
-setInterval(createHeart, 100);
+      <div id="extraQuestion" onclick="showPopup()">I have one thing to ask you 💌</div>
+      <div id="popup">
+        <p style="font-size:1.1rem;color:#d63384;margin:0 0 8px">If there is nobody in your life... will you accept my proposal? 💞</p>
+        <div class="row">
+          <button class="btn" onclick="popupYes()">Yes 💘</button>
+          <button class="btn" onclick="popupNo()">No 😢</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-// Move "No" button safely
-function nextNoOption() {
-  const noBtn = document.getElementById("noBtn");
-  index++;
-  const padding = 80;
-  const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-  const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+  <div id="celebration" class="screen hidden">
+    <canvas id="confettiCanvas"></canvas>
+    <div class="hero">
+      <h2 class="big">A tiny question… 💗</h2>
+      <p>Will you be mine forever?</p>
+      <div class="row">
+        <button class="btn" onclick="celebrationYes()">Yes 💞</button>
+        <button class="btn ghost" onclick="celebrationNo()">Hmm… Not sure 😅</button>
+      </div>
+      <p class="mini">After Yes: confetti + petals + music switch</p>
+      <audio id="celeMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c7129e1f5.mp3?filename=romantic-piano-ambient-10134.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </div>
 
-  let x = Math.random() * maxX + padding / 2;
-  let y = Math.random() * maxY + padding / 2;
+  <div id="chatbot" class="screen hidden">
+    <div class="chat" id="chatbox"></div>
+    <div class="inputRow">
+      <input id="chatInput" type="text" placeholder="Type your reply… (try yes / no)" />
+      <button class="btn" onclick="chatSend()">Send</button>
+      <button class="btn ghost" onclick="voiceToggle()" id="voiceBtn">🎤 Speak</button>
+    </div>
+  </div>
 
-  x = Math.max(padding / 2, Math.min(x, window.innerWidth - noBtn.offsetWidth - padding / 2));
-  y = Math.max(padding / 2, Math.min(y, window.innerHeight - noBtn.offsetHeight - padding / 2));
+  <div id="couple" class="screen hidden">
+    <div class="couple-wrap">
+      <h2 class="big">Our Love Page 💞</h2>
+      <div class="row">
+        <input id="nameA" type="text" placeholder="Your name" />
+        <input id="nameB" type="text" placeholder="Their name" />
+        <input id="startDate" type="date" />
+        <button class="btn" onclick="saveCouple()">Save & Show</button>
+      </div>
+      <div id="coupleView" class="hidden">
+        <div class="names" id="namesText">A ❤️ B</div>
+        <p class="count" id="countText">0 days of forever</p>
+        <p class="mini">Bookmark & come back any day—it remembers 🫶</p>
+      </div>
+    </div>
+  </div>
 
-  noBtn.style.left = `${x}px`;
-  noBtn.style.top = `${y}px`;
-  noBtn.style.transition = "all 0.3s ease";
+  <!-- floating hearts generator -->
+  <script>
+  // ======= CONFIG =======
+  const WEB3FORMS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY"; // <- replace this
+  // const DISCORD_WEBHOOK = ""; // optional: add your Discord webhook to get instant pings
+  // ======================
 
-  if (index < noOptions.length) {
-    noBtn.textContent = noOptions[index];
-  } else {
-    sayYes();
+  /* ---------- Utility: simple notification via Web3Forms ---------- */
+  async function notify(subject, message){
+    if(!WEB3FORMS_KEY || WEB3FORMS_KEY.includes("YOUR_WEB3FORMS_ACCESS_KEY")) return; // avoid failing before user sets key
+    try{
+      await fetch("https://api.web3forms.com/submit",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json","Accept":"application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject, from_name:"Love Page 💌", message
+        })
+      });
+    }catch(e){/* ignore for UX */}
+    // Optional Discord
+    // if (DISCORD_WEBHOOK) fetch(DISCORD_WEBHOOK,{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify({content:`${subject}\n${message}`})});
   }
-}
 
-// Send email notification via Web3Forms
-async function sendNotification(subject, message) {
-  await fetch("https://api.web3forms.com/submit", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
+  /* ---------- Mode switching ---------- */
+  function showMode(id){
+    for(const el of document.querySelectorAll('.screen')) el.classList.add('hidden');
+    document.getElementById(id).classList.remove('hidden');
+    if(id==='classic'){ initClassic(); }
+    if(id==='chatbot'){ initChat(); }
+    if(id==='couple'){ initCouplePrefill(); }
+    if(id==='celebration'){ resizeConfetti(); }
+  }
+
+  /* ---------- Floating hearts (global ambiance) ---------- */
+  function makeHeart(){
+    const h=document.createElement('div');
+    h.className='heart'; h.textContent='💖';
+    h.style.left= (Math.random()*100)+'vw';
+    h.style.bottom='-10px';
+    h.style.animationDuration=(Math.random()*3+3)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  }
+  setInterval(makeHeart, 140);
+
+  /* ===================== CLASSIC PROPOSAL ===================== */
+  let noLines = [
+    "No 💔","Are you sure? 😢","Please... just think again 💭","Don’t be so cold 🥶","C’mon, I made this just for you 😔",
+    "Don’t break my heart 💘","You’ll regret this 😭","You can’t escape love 💞","Give it a chance 💫","Please reconsider 🥺",
+    "Still no? You're tough 😩","You sure you’re not smiling right now? 😏","A tiny yes won’t hurt 😉",
+    "Okay, now you’re just teasing me 😅","My heart can’t handle another no 💔","Are you really that sure? 😢",
+    "One yes could make this magical ✨","You’re melting my heart already ❤️","Fine… last chance 💘","You finally said YES! 🎉💞"
+  ];
+  let noIndex=0, classicReady=false;
+
+  function initClassic(){
+    if(classicReady) return;
+    classicReady=true;
+    // allow audio after first user gesture
+    const m=document.getElementById('bgmusic');
+    window.addEventListener('pointerdown',()=>m?.play?.().catch(()=>{}),{once:true});
+  }
+
+  function moveNo(){
+    const noBtn=document.getElementById('noBtn');
+    noIndex++;
+    const pad=80;
+    const maxX=window.innerWidth - noBtn.offsetWidth - pad;
+    const maxY=window.innerHeight- noBtn.offsetHeight- pad;
+    let x=Math.random()*maxX + pad/2;
+    let y=Math.random()*maxY + pad/2;
+    x=Math.max(pad/2, Math.min(x, window.innerWidth - noBtn.offsetWidth - pad/2));
+    y=Math.max(pad/2, Math.min(y, window.innerHeight- noBtn.offsetHeight- pad/2));
+    noBtn.style.left=x+'px'; noBtn.style.top=y+'px';
+    noBtn.style.transition='all .28s ease';
+    noBtn.textContent = noLines[Math.min(noIndex, noLines.length-1)];
+    if(noIndex>=noLines.length-1) classicYes();
+  }
+
+  async function classicYes(){
+    const wrap=document.getElementById('classic');
+    wrap.innerHTML=`
+      <div class="hero">
+        <h2 class="big">Yes! 💞</h2>
+        <h3 style="margin:.2em 0; color:#c2185b">You just made me the happiest person alive!</h3>
+        <p>This is just the beginning of our beautiful journey together 💫</p>
+        <p>Forever and always ❤️</p>
+        <div id="extraQuestion">I have one thing to ask you 💌</div>
+        <div id="popup">
+          <p style="font-size:1.05rem;color:#d63384;margin-top:0">Suppose un life la santhosh illa na</p>
+          <p style="font-size:1.05rem;color:#d63384;margin-top:0">"Will you accept my proposal?" 💞</p>
+          <div class="row">
+            <button class="btn" onclick="popupYes()">Yes 💘</button>
+            <button class="btn" onclick="popupNo()">No 😢</button>
+          </div>
+        </div>
+      </div>
+    `;
+    setTimeout(()=>document.getElementById('extraQuestion').style.display='block',600);
+    document.getElementById('extraQuestion').onclick=showPopup;
+    await notify("💖 Main Question: YES clicked","They said YES on Classic mode.\nTime: "+new Date().toLocaleString());
+  }
+
+  function showPopup(){ document.getElementById('popup').style.display='block'; }
+  async function popupYes(){
+    document.getElementById('popup').innerHTML="<h2 style='color:#d63384;margin:0 8px'>You said Yes again! 💞 I’m the luckiest person ever!</h2>";
+    await notify("💌 Second Question: YES 💘","They accepted your popup question.\nTime: "+new Date().toLocaleString());
+  }
+  async function popupNo(){
+    document.getElementById('popup').innerHTML="<h2 style='color:#d63384;margin:0 8px'>Aww 😢 But I’ll still cherish you forever 💔</h2>";
+    await notify("💌 Second Question: NO 😢","They said NO to your popup question.\nTime: "+new Date().toLocaleString());
+  }
+
+  /* ===================== CELEBRATION EFFECTS ===================== */
+  // tiny confetti
+  const confetti = {
+    ctx:null, w:0, h:0, parts:[],
+    spawn(n=150){
+      for(let i=0;i<n;i++){
+        this.parts.push({
+          x:Math.random()*this.w, y:-20-Math.random()*this.h*.2,
+          vx:(Math.random()-.5)*2, vy:2+Math.random()*2.5,
+          s:4+Math.random()*4, rot:Math.random()*Math.PI, vr:(Math.random()-.5)*.2,
+          hue:Math.floor(Math.random()*360)
+        });
+      }
     },
-    body: JSON.stringify({
-      access_key: WEB3FORMS_KEY,
-      subject: subject,
-      from_name: "Romantic Proposal Page 💌",
-      message: message
-    })
-  });
-}
+    step(){
+      if(!this.ctx) return;
+      this.ctx.clearRect(0,0,this.w,this.h);
+      this.parts.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+        this.ctx.save();
+        this.ctx.translate(p.x,p.y); this.ctx.rotate(p.rot);
+        this.ctx.fillStyle=`hsl(${p.hue},90%,60%)`;
+        this.ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);
+        this.ctx.restore();
+      });
+      this.parts=this.parts.filter(p=>p.y<this.h+40);
+      requestAnimationFrame(()=>this.step());
+    }
+  };
+  function resizeConfetti(){
+    const c=document.getElementById('confettiCanvas');
+    if(!c) return; confetti.ctx=c.getContext('2d');
+    const rect=c.parentElement.getBoundingClientRect();
+    c.width=rect.width; c.height=rect.height; confetti.w=c.width; confetti.h=c.height;
+  }
+  window.addEventListener('resize',resizeConfetti);
 
-// When user says YES to main question
-async function sayYes() {
-  document.body.innerHTML = `
-    <div class="fadein">
-      <h1 style='color:#ff4081;font-size:3em;font-family:"Great Vibes",cursive;'>Yes! 💞</h1>
-      <h1 style='color:#c2185b;font-size:2em;'>You just made me the happiest person alive!</h1>
-      <p>This is just the beginning of our beautiful journey together 💫</p>
-      <p>Forever and always ❤️</p>
-    </div>
-    <div id="extraQuestion" onclick="showPopup()">I have one thing to ask you 💌</div>
-    <div id="popup">
-      <p style="font-size:1.2em;color:#d63384;">Suppose un life la santhosh illa na</p>
-      <p style="font-size:1.2em;color:#d63384;">Will you accept my proposal? 💞</p>
-      <button class="btn" onclick="popupYes()">Yes 💘</button>
-      <button class="btn" onclick="popupNo()">No 😢</button>
-    </div>
-  `;
-  setInterval(createHeart, 300);
-  setTimeout(() => document.getElementById("extraQuestion").style.display = "block", 1000);
+  function petalsBurst(){
+    for(let i=0;i<24;i++){ makeHeart(); } // reuse hearts as petals vibe
+  }
 
-  await sendNotification(
-    "💖 Someone clicked YES on your Love Page!",
-    `Main Question Response: YES 💕\n🕐 Time: ${new Date().toLocaleString()}`
-  );
-}
+  async function celebrationYes(){
+    const music=document.getElementById('celeMusic');
+    music?.play?.().catch(()=>{});
+    resizeConfetti(); confetti.spawn(220); confetti.step(); petalsBurst();
+    await notify("🎊 Celebration Yes","They clicked Yes in Celebration mode.\nTime: "+new Date().toLocaleString());
+  }
+  async function celebrationNo(){
+    await notify("🎊 Celebration Maybe/No","They did not confirm in Celebration mode.\nTime: "+new Date().toLocaleString());
+    alert("Take your time… my heart will wait 💗");
+  }
 
-// Popup show
-function showPopup() {
-  document.getElementById("popup").style.display = "block";
-}
+  /* ===================== ROMANTIC CHATBOT + VOICE ===================== */
+  let chat, synth, recog, listening=false, convoStep=0;
+  const script = [
+    "Hey you… I’ve been waiting to ask you something special 💌",
+    "Do you believe in love at first sight? (say/ type yes or no)",
+    ["Aww you said yes! You just made my heart skip a beat 💘","Haha honest! Maybe second sight will do the magic 😉"],
+    "One last thing… Will you be mine? 💞 (yes / no)"
+  ];
+  function addBubble(text,who='bot'){
+    const b=document.createElement('div'); b.className='bubble '+(who==='you'?'you':'bot'); b.textContent=text;
+    chat.appendChild(b); chat.scrollTop=chat.scrollHeight;
+  }
+  function speak(text){
+    if(!synth) return; const u=new SpeechSynthesisUtterance(text); u.rate=1; u.pitch=1.05; u.lang='en-US'; synth.speak(u);
+  }
+  function initChat(){
+    chat=document.getElementById('chatbox');
+    chat.innerHTML='';
+    synth=window.speechSynthesis;
+    addBubble(script[0]); speak(script[0]);
+    setTimeout(()=>{ addBubble(script[1]); speak(script[1]); },700);
+    // init recognition
+    if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recog=new SR(); recog.lang='en-US'; recog.interimResults=false; recog.onresult=(e)=>{
+        const t=e.results[0][0].transcript.trim(); addBubble(t,'you'); handleChat(t.toLowerCase());
+      };
+      recog.onend=()=>{ if(listening) recog.start(); };
+    }
+  }
+  function voiceToggle(){
+    if(!recog){ alert("Voice recognition not supported here. Type your answer 💬"); return;}
+    listening=!listening;
+    document.getElementById('voiceBtn').textContent = listening ? "🛑 Stop" : "🎤 Speak";
+    if(listening) recog.start(); else recog.stop();
+  }
+  function chatSend(){
+    const inp=document.getElementById('chatInput');
+    const t=inp.value.trim(); if(!t) return; inp.value=''; addBubble(t,'you'); handleChat(t.toLowerCase());
+  }
+  async function handleChat(t){
+    if(convoStep===0){
+      convoStep=1; // after first two messages, evaluate love at first sight
+      const yes = /^(y|yes|yeah|yup|sure)/.test(t);
+      addBubble( yes? script[2][0] : script[2][1] ); speak( yes? "Aww you said yes!" : "Haha honest!" );
+      setTimeout(()=>{ addBubble(script[3]); speak("Will you be mine? yes or no"); },600);
+    } else if(convoStep===1){
+      const yes = /^(y|yes|yeah|yup|sure)/.test(t);
+      if(yes){
+        addBubble("You said YES! I’m over the moon 🌙✨"); speak("You said yes! Thank you!");
+        await notify("💬 Chatbot: YES","They said YES in chatbot mode.\nTime: "+new Date().toLocaleString());
+      }else{
+        addBubble("It’s okay… my heart will wait 💗"); speak("It's okay. I'll wait.");
+        await notify("💬 Chatbot: NO","They said NO in chatbot mode.\nTime: "+new Date().toLocaleString());
+      }
+      convoStep=2;
+    }
+  }
 
-// Popup YES
-async function popupYes() {
-  document.getElementById("popup").innerHTML = "<h2 style='color:#d63384;'>You said Yes again! 💞 I’m the luckiest person ever!</h2>";
-  await sendNotification(
-    "💌 Second Question Response: YES 💘",
-    `They accepted your second question 💖\n🕐 Time: ${new Date().toLocaleString()}`
-  );
-}
+  /* ===================== COUPLE PAGE ===================== */
+  function initCouplePrefill(){
+    const a=localStorage.getItem('love_nameA')||""; const b=localStorage.getItem('love_nameB')||"";
+    const d=localStorage.getItem('love_start')||"";
+    document.getElementById('nameA').value=a; document.getElementById('nameB').value=b; if(d) document.getElementById('startDate').value=d;
+    if(a&&b&&d) renderCouple(a,b,d);
+  }
+  function daysBetween(startISO){
+    const s=new Date(startISO); const now=new Date();
+    const diff=Math.floor((now - s)/(1000*60*60*24)); return diff>=0?diff:0;
+  }
+  async function saveCouple(){
+    const a=document.getElementById('nameA').value.trim()||"A";
+    const b=document.getElementById('nameB').value.trim()||"B";
+    const d=document.getElementById('startDate').value;
+    if(!d){ alert("Pick a special date 💖"); return;}
+    localStorage.setItem('love_nameA',a); localStorage.setItem('love_nameB',b); localStorage.setItem('love_start',d);
+    renderCouple(a,b,d);
+    await notify("💑 Couple Page Saved",`Names: ${a} ❤️ ${b}\nStart: ${d}\nTime: ${new Date().toLocaleString()}`);
+  }
+  function renderCouple(a,b,d){
+    document.getElementById('coupleView').classList.remove('hidden');
+    document.getElementById('namesText').textContent = `${a} ❤️ ${b}`;
+    document.getElementById('countText').textContent = `${daysBetween(d)} days of forever`;
+  }
 
-// Popup NO
-async function popupNo() {
-  document.getElementById("popup").innerHTML = "<h2 style='color:#d63384;'>Aww 😢 But I’ll still cherish you forever 💔</h2>";
-  await sendNotification(
-    "💌 Second Question Response: NO 😢",
-    `They said NO to your second question 💔\n🕐 Time: ${new Date().toLocaleString()}`
-  );
-}
-</script>
-
+  // Start with Classic visible
+  showMode('classic');
+  </script>
 </body>
 </html>
