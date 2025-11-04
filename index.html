@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be Mine?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap');
+
+  body {
+    margin: 0;
+    background: radial-gradient(circle at top left, #ffd6e0, #ffe6ea, #fff5f7);
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  h1 {
+    color: #c2185b;
+    font-size: 3em;
+    margin-top: 12vh;
+    text-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
+  }
+
+  p {
+    color: #5a0035;
+    font-size: 1.1em;
+  }
+
+  .btn {
+    background: linear-gradient(135deg, #ff80ab, #f50057);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    margin: 10px;
+    border-radius: 50px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 15px rgba(245,0,87,0.3);
+    position: relative;
+  }
+
+  .btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(245,0,87,0.5);
+  }
+
+  #noBtn {
+    background: linear-gradient(135deg, #ffb6c1, #ff4081);
+    position: absolute;
+    transition: all 0.3s ease;
+  }
+
+  .heart {
+    position: absolute;
+    font-size: 24px;
+    color: #ff4d6d;
+    animation: floatUp 6s linear infinite;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  @keyframes floatUp {
+    0% {transform: translateY(0) scale(1); opacity: 1;}
+    100% {transform: translateY(-100vh) scale(0.5); opacity: 0;}
+  }
+
+  .fadein {
+    animation: fadein 2s ease forwards;
+  }
+
+  @keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  #extraQuestion {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    background: white;
+    color: #d63384;
+    border-radius: 12px;
+    padding: 15px 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    font-weight: bold;
+    cursor: pointer;
+    display: none;
+  }
+
+  #popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff0f5;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: none;
+    animation: fadein 0.5s ease forwards;
+  }
+</style>
+</head>
+<body>
+
+  <h1 class="fadein">Will You Be Mine? 💖</h1>
+
+  <button class="btn fadein" id="yesBtn" onclick="sayYes()">Yes 💕</button>
+  <button class="btn fadein" id="noBtn" onclick="nextNoOption()">No 💔</button>
+
+  <audio id="bgmusic" loop autoplay volume="0.3">
+    <source src="https://cdn.pixabay.com/download/audio/2021/09/29/audio_d3c61d23e0.mp3?filename=romantic-background-ambient-12258.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="extraQuestion" onclick="showPopup()">I have one thing to ask you 💌</div>
+
+  <div id="popup">
+    <p style="font-size:1.2em;color:#d63384;">If there is nobody in your life... will you accept my proposal? 💞</p>
+    <button class="btn" onclick="popupYes()">Yes 💘</button>
+    <button class="btn" onclick="popupNo()">No 😢</button>
+  </div>
+
+<script>
+const WEB3FORMS_KEY = "c170326d-ba7b-4dbc-8743-3a0775b30c89"; // Replace with your real access key
+
+let noOptions = [
+  "No 💔",
+  "Are you sure? 😢",
+  "Please... just think again 💭",
+  "Don’t be so cold 🥶",
+  "C’mon, I made this just for you 😔",
+  "Don’t break my heart 💘",
+  "You’ll regret this 😭",
+  "You can’t escape love 💞",
+  "Give it a chance 💫",
+  "Please reconsider 🥺",
+  "Still no? You're tough 😩",
+  "You sure you’re not smiling right now? 😏",
+  "A tiny yes won’t hurt 😉",
+  "Okay, now you’re just teasing me 😅",
+  "My heart can’t handle another no 💔",
+  "Are you really that sure? 😢",
+  "One yes could make this magical ✨",
+  "You’re melting my heart already ❤️",
+  "Fine… last chance 💘",
+  "You finally said YES! 🎉💞"
+];
+let index = 0;
+
+// Floating hearts animation
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.textContent = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = Math.random() * 3 + 3 + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}
+setInterval(createHeart, 100);
+
+// Move "No" button safely
+function nextNoOption() {
+  const noBtn = document.getElementById("noBtn");
+  index++;
+  const padding = 80;
+  const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+  const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+  let x = Math.random() * maxX + padding / 2;
+  let y = Math.random() * maxY + padding / 2;
+
+  x = Math.max(padding / 2, Math.min(x, window.innerWidth - noBtn.offsetWidth - padding / 2));
+  y = Math.max(padding / 2, Math.min(y, window.innerHeight - noBtn.offsetHeight - padding / 2));
+
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+  noBtn.style.transition = "all 0.3s ease";
+
+  if (index < noOptions.length) {
+    noBtn.textContent = noOptions[index];
+  } else {
+    sayYes();
+  }
+}
+
+// Send email notification via Web3Forms
+async function sendNotification(subject, message) {
+  await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject: subject,
+      from_name: "Romantic Proposal Page 💌",
+      message: message
+    })
+  });
+}
+
+// When user says YES to main question
+async function sayYes() {
+  document.body.innerHTML = `
+    <div class="fadein">
+      <h1 style='color:#ff4081;font-size:3em;font-family:"Great Vibes",cursive;'>Yes! 💞</h1>
+      <h1 style='color:#c2185b;font-size:2em;'>You just made me the happiest person alive!</h1>
+      <p>This is just the beginning of our beautiful journey together 💫</p>
+      <p>Forever and always ❤️</p>
+    </div>
+    <div id="extraQuestion" onclick="showPopup()">I have one thing to ask you 💌</div>
+    <div id="popup">
+      <p style="font-size:1.2em;color:#d63384;">Suppose un life la santhosh illa na</p>
+      <p style="font-size:1.2em;color:#d63384;">Will you accept my proposal? 💞</p>
+      <button class="btn" onclick="popupYes()">Yes 💘</button>
+      <button class="btn" onclick="popupNo()">No 😢</button>
+    </div>
+  `;
+  setInterval(createHeart, 300);
+  setTimeout(() => document.getElementById("extraQuestion").style.display = "block", 1000);
+
+  await sendNotification(
+    "💖 Someone clicked YES on your Love Page!",
+    `Main Question Response: YES 💕\n🕐 Time: ${new Date().toLocaleString()}`
+  );
+}
+
+// Popup show
+function showPopup() {
+  document.getElementById("popup").style.display = "block";
+}
+
+// Popup YES
+async function popupYes() {
+  document.getElementById("popup").innerHTML = "<h2 style='color:#d63384;'>You said Yes again! 💞 I’m the luckiest person ever!</h2>";
+  await sendNotification(
+    "💌 Second Question Response: YES 💘",
+    `They accepted your second question 💖\n🕐 Time: ${new Date().toLocaleString()}`
+  );
+}
+
+// Popup NO
+async function popupNo() {
+  document.getElementById("popup").innerHTML = "<h2 style='color:#d63384;'>Aww 😢 But I’ll still cherish you forever 💔</h2>";
+  await sendNotification(
+    "💌 Second Question Response: NO 😢",
+    `They said NO to your second question 💔\n🕐 Time: ${new Date().toLocaleString()}`
+  );
+}
+</script>
+
+</body>
+</html>
